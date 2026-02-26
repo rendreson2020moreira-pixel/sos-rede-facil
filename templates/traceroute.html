@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Traceroute</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>🛰 Traceroute — Rota da Conexão</header>
+
+<div class="box">
+
+    <p>Mostra o caminho que os pacotes percorrem até o destino.</p>
+
+    <form method="POST">
+        <input type="text" name="host" placeholder="Digite o site ou IP (ex: google.com)" required>
+        <button type="submit">Executar Traceroute</button>
+    </form>
+
+    {% if resultado %}
+        <pre class="resultado">{{ resultado }}</pre>
+    {% endif %}
+
+    <a class="voltar" href="/">⬅ Voltar</a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Teste de Conectividade</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>🌐 Teste de Conectividade (Ping)</header>
+
+<div class="box">
+
+    <p>Verifique se há comunicação com um site ou IP.</p>
+
+    <form method="POST">
+        <input type="text" name="host" placeholder="Digite o site ou IP (ex: google.com)" required>
+        <button type="submit">Executar Ping</button>
+    </form>
+
+    {% if resultado %}
+        <pre class="resultado">{{ resultado }}</pre>
+    {% endif %}
+
+    <a class="voltar" href="/">⬅ Voltar</a>
+
+</div>
+
+</body>
+</html>

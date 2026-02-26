@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Scanner de Rede</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>🛰 Scanner de Rede</header>
+
+<div class="box">
+
+    <p>Detecta dispositivos conectados na sua rede local.</p>
+
+    <form method="POST">
+        <button type="submit">Iniciar Scanner</button>
+    </form>
+
+    {% if dispositivos %}
+        <pre class="resultado">{{ dispositivos }}</pre>
+    {% endif %}
+
+    <a class="voltar" href="/">⬅ Voltar</a>
+
+</div>
+
+</body>
+</html>

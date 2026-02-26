@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro — SOS Rede Fácil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="login-body">
+
+<div class="login-container">
+
+    <div class="login-box">
+
+        <h2>📝 Criar Conta</h2>
+        <p>SOS Rede Fácil — Painel Profissional</p>
+
+        <form method="POST">
+            <input type="text" name="nome" placeholder="Nome completo" required>
+            <input type="email" name="email" placeholder="E-mail" required>
+            <input type="password" name="senha" placeholder="Senha" required>
+            <button type="submit">Cadastrar</button>
+        </form>
+
+        <a href="/">⬅ Voltar para o login</a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

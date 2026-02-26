@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>SOS Rede Fácil</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<header class="topo">
+    <h1>🛜 SOS Rede Fácil</h1>
+    <p>Painel Profissional de Diagnóstico de Redes</p>
+</header>
+
+<div class="container">
+
+    <!-- CARDS PRINCIPAIS -->
+    <div class="cards">
+        <a href="/ip" class="card ip">
+            <i class="fas fa-network-wired"></i>
+            <h3>Meu IP</h3>
+            <p>Ver informações da máquina</p>
+        </a>
+
+        <a href="/ping" class="card ping">
+            <i class="fas fa-signal"></i>
+            <h3>Ping</h3>
+            <p>Testar conexão</p>
+        </a>
+    </div>
+
+    <!-- DIAGNÓSTICO -->
+    <h2 class="secao">🛰 Diagnóstico</h2>
+    <div class="grid">
+        <div class="card">
+            <h3>📡 Scanner de Rede</h3>
+            <p>Detecta dispositivos conectados.</p>
+            <a href="/scanner">Abrir</a>
+        </div>
+
+        <div class="card">
+            <h3>🧭 Traceroute</h3>
+            <p>Exibe a rota dos pacotes.</p>
+            <a href="/traceroute">Abrir</a>
+        </div>
+    </div>
+
+    <!-- PERFORMANCE -->
+    <h2 class="secao">⚡ Performance</h2>
+    <div class="grid">
+        <div class="card">
+            <h3>🚀 Velocidade</h3>
+            <p>Mede download, upload e ping.</p>
+            <a href="/velocidade">Abrir</a>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <p>SOS Rede Fácil © 2026 — Sistema Profissional</p>
+</footer>
+
+</body>
+</html>

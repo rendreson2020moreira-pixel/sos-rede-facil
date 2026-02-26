@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Teste de Velocidade</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>🚀 Teste de Velocidade da Internet</header>
+
+<div class="box">
+
+    <p>Realiza o teste de download, upload e ping da sua conexão.</p>
+
+    <form method="POST">
+        <button type="submit">Iniciar Teste</button>
+    </form>
+
+    {% if resultado %}
+        <pre class="resultado">{{ resultado }}</pre>
+    {% endif %}
+
+    <a class="voltar" href="/">⬅ Voltar</a>
+
+</div>
+
+</body>
+</html>

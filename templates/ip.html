@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Informações de IP</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>📡 Informações de IP</header>
+
+<div class="box">
+
+    <p>Dados da rede local e internet.</p>
+
+    <div class="ip-box">
+        <p><strong>IP Local:</strong> {{ ip_local }}</p>
+        <p><strong>IP Público:</strong> {{ ip_publico }}</p>
+    </div>
+
+    <a class="voltar" href="/">⬅ Voltar</a>
+
+</div>
+
+</body>
+</html>
