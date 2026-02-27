@@ -191,7 +191,5 @@ def traceroute():
 
     return render_template("traceroute.html", resultado=resultado)
 
-# -------------------- START --------------------
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
