@@ -5,6 +5,7 @@ import platform
 import time
 import sqlite3
 import concurrent.futures
+import requests
 
 app = Flask(__name__)
 app.secret_key = 'sosrede'
@@ -90,45 +91,73 @@ def logout():
 
 # -------------------- PING --------------------
 
-@app.route('/ping')
+@app.route('/ping', methods=['GET', 'POST'])
 def ping():
-    resultado = os.popen("ping google.com -n 2").read()
-    return f"<pre>{resultado}</pre><br><a href='/painel'>Voltar</a>"
+    resultado = ""
 
-# -------------------- IP --------------------
+    if request.method == 'POST':
+        host = request.form.get('host')
+
+        if platform.system() == "Windows":
+            comando = f"ping -n 4 {host}"
+        else:
+            comando = f"ping -c 4 {host}"
+
+        resultado = os.popen(comando).read()
+
+    return render_template("ping.html", resultado=resultado)
+
+# -------------------- IP PROFISSIONAL --------------------
 
 @app.route('/ip')
 def ip():
-    hostname = socket.gethostname()
-    ip_local = socket.gethostbyname(hostname)
-    return f"<h3>Hostname:</h3> {hostname}<br><h3>IP Local:</h3> {ip_local}<br><br><a href='/painel'>Voltar</a>"
+    try:
+        dados = requests.get("https://ipinfo.io/json").json()
+        ip_publico = dados.get("ip", "Desconhecido")
+        cidade = dados.get("city", "Desconhecida")
+        regiao = dados.get("region", "")
+        pais = dados.get("country", "")
+        provedor = dados.get("org", "Desconhecido")
+    except:
+        ip_publico = cidade = regiao = pais = provedor = "Erro"
+
+    return render_template("ip.html",
+                           ip=ip_publico,
+                           cidade=cidade,
+                           regiao=regiao,
+                           pais=pais,
+                           provedor=provedor)
 
 # -------------------- VELOCIDADE --------------------
 
 @app.route('/velocidade')
 def velocidade():
     inicio = time.time()
-    resposta = os.system("ping google.com -n 1 > nul")
+
+    if platform.system() == "Windows":
+        os.system("ping -n 1 google.com > nul")
+    else:
+        os.system("ping -c 1 google.com > /dev/null")
+
     fim = time.time()
 
     tempo_ms = round((fim - inicio) * 1000, 2)
 
-    if resposta == 0:
-        status = "🟢 Conectado à Internet"
-    else:
-        status = "🔴 Sem Conexão"
-
-    return render_template("velocidade.html", status=status, tempo=tempo_ms)
+    return render_template("velocidade.html", tempo=tempo_ms)
 
 # -------------------- SCANNER --------------------
 
-@app.route('/scanner')
+@app.route('/scanner', methods=['GET'])
 def scanner():
     base = "192.168.0."
     dispositivos = []
 
-    def testar_ip(ip):
-        resposta = os.system(f"ping -n 1 -w 50 {ip} > nul")
+    def testar(ip):
+        if platform.system() == "Windows":
+            resposta = os.system(f"ping -n 1 -w 80 {ip} > nul")
+        else:
+            resposta = os.system(f"ping -c 1 -W 1 {ip} > /dev/null")
+
         if resposta == 0:
             return ip
         return None
@@ -136,7 +165,7 @@ def scanner():
     ips = [base + str(i) for i in range(1, 50)]
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
-        resultados = executor.map(testar_ip, ips)
+        resultados = executor.map(testar, ips)
 
     for r in resultados:
         if r:
@@ -152,17 +181,17 @@ def traceroute():
 
     if request.method == 'POST':
         destino = request.form.get('destino')
-        if destino:
-            if platform.system() == "Windows":
-                comando = f"tracert {destino}"
-            else:
-                comando = f"traceroute {destino}"
 
-            resultado = os.popen(comando).read()
+        if platform.system() == "Windows":
+            comando = f"tracert {destino}"
+        else:
+            comando = f"traceroute {destino}"
+
+        resultado = os.popen(comando).read()
 
     return render_template("traceroute.html", resultado=resultado)
 
 # -------------------- START --------------------
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
