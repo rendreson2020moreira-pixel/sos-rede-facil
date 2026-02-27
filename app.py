@@ -95,15 +95,16 @@ def logout():
 @app.route('/ping', methods=['GET', 'POST'])
 def ping():
     resultado = ""
+
     if request.method == 'POST':
         host = request.form.get('host')
 
         try:
             param = "-n" if platform.system().lower() == "windows" else "-c"
             comando = ["ping", param, "4", host]
-            resultado = subprocess.check_output(comando, universal_newlines=True)
+            resultado = subprocess.check_output(comando, universal_newlines=True, timeout=15)
         except:
-            resultado = "Erro ao executar o ping."
+            resultado = "Erro ao executar ping."
 
     return render_template("ping.html", resultado=resultado)
 
@@ -113,52 +114,66 @@ def ping():
 def ip():
     try:
         dados = requests.get("https://ipinfo.io/json", timeout=5).json()
-        return render_template("ip.html", dados=dados)
     except:
-        return render_template("ip.html", dados={"ip": "Erro ao obter dados"})
+        dados = {}
+
+    return render_template("ip.html", dados=dados)
 
 # -------------------- VELOCIDADE --------------------
 
-@app.route('/velocidade')
+@app.route('/velocidade', methods=['GET', 'POST'])
 def velocidade():
-    inicio = time.time()
+    tempo = None
 
-    try:
-        param = "-n" if platform.system().lower() == "windows" else "-c"
-        subprocess.call(["ping", param, "1", "google.com"])
-    except:
-        pass
+    if request.method == 'POST':
+        inicio = time.time()
 
-    fim = time.time()
-    tempo_ms = round((fim - inicio) * 1000, 2)
+        try:
+            param = "-n" if platform.system().lower() == "windows" else "-c"
+            subprocess.call(["ping", param, "1", "google.com"],
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL,
+                            timeout=10)
+        except:
+            pass
 
-    return render_template("velocidade.html", tempo=tempo_ms)
+        fim = time.time()
+        tempo = round((fim - inicio) * 1000, 2)
+
+    return render_template("velocidade.html", tempo=tempo)
 
 # -------------------- SCANNER --------------------
 
-@app.route('/scanner')
+@app.route('/scanner', methods=['GET', 'POST'])
 def scanner():
-    base = "192.168.0."
     dispositivos = []
 
-    def testar(ip):
-        try:
-            param = "-n" if platform.system().lower() == "windows" else "-c"
-            subprocess.call(["ping", param, "1", ip],
-                            stdout=subprocess.DEVNULL,
-                            stderr=subprocess.DEVNULL)
-            return ip
-        except:
+    if request.method == 'POST':
+        base = "192.168.0."
+
+        def testar(ip):
+            try:
+                param = "-n" if platform.system().lower() == "windows" else "-c"
+                resposta = subprocess.call(
+                    ["ping", param, "1", ip],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    timeout=2
+                )
+                if resposta == 0:
+                    return ip
+            except:
+                pass
             return None
 
-    ips = [base + str(i) for i in range(1, 30)]
+        ips = [base + str(i) for i in range(1, 50)]
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=30) as executor:
-        resultados = executor.map(testar, ips)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=40) as executor:
+            resultados = executor.map(testar, ips)
 
-    for r in resultados:
-        if r:
-            dispositivos.append(r)
+        for r in resultados:
+            if r:
+                dispositivos.append(r)
 
     return render_template("scanner.html", dispositivos=dispositivos)
 
@@ -170,9 +185,10 @@ def traceroute():
 
     if request.method == 'POST':
         destino = request.form.get('destino')
+
         try:
             comando = ["tracert", destino] if platform.system().lower() == "windows" else ["traceroute", destino]
-            resultado = subprocess.check_output(comando, universal_newlines=True)
+            resultado = subprocess.check_output(comando, universal_newlines=True, timeout=30)
         except:
             resultado = "Erro ao executar traceroute."
 
@@ -182,5 +198,3 @@ def traceroute():
 
 if __name__ == '__main__':
     app.run()
-
-
