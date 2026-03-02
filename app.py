@@ -1,17 +1,13 @@
 from flask import Flask, render_template, request, redirect, session
-import os
-import socket
-import time
 import sqlite3
-import concurrent.futures
+import os
 import requests
-import subprocess
-import platform
+import time
 
 app = Flask(__name__)
 app.secret_key = 'sosrede'
 
-# -------------------- BANCO DE DADOS --------------------
+# -------------------- BANCO --------------------
 
 def conectar():
     return sqlite3.connect("usuarios.db")
@@ -35,45 +31,45 @@ criar_banco()
 
 # -------------------- LOGIN --------------------
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email')
-        senha = request.form.get('senha')
+        email = request.form['email']
+        senha = request.form['senha']
 
         conn = conectar()
         cur = conn.cursor()
-        cur.execute("SELECT * FROM usuarios WHERE email=? AND senha=?", (email, senha))
+        cur.execute("SELECT * FROM usuarios WHERE email=? AND senha=?", (email,senha))
         user = cur.fetchone()
         conn.close()
 
         if user:
             session['usuario'] = user[1]
             return redirect('/painel')
-        else:
-            return render_template('login.html', erro="Login inválido")
 
-    return render_template('login.html')
+        return render_template("login.html", erro="Login inválido")
+
+    return render_template("login.html")
 
 # -------------------- CADASTRO --------------------
 
-@app.route('/cadastro', methods=['GET', 'POST'])
+@app.route('/cadastro', methods=['GET','POST'])
 def cadastro():
     if request.method == 'POST':
-        nome = request.form.get('nome')
-        email = request.form.get('email')
-        senha = request.form.get('senha')
+        nome = request.form['nome']
+        email = request.form['email']
+        senha = request.form['senha']
 
         conn = conectar()
         cur = conn.cursor()
-        cur.execute("INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)",
-                    (nome, email, senha))
+        cur.execute("INSERT INTO usuarios (nome,email,senha) VALUES (?,?,?)",
+                    (nome,email,senha))
         conn.commit()
         conn.close()
 
         return redirect('/')
 
-    return render_template('cadastro.html')
+    return render_template("cadastro.html")
 
 # -------------------- PAINEL --------------------
 
@@ -81,7 +77,7 @@ def cadastro():
 def painel():
     if 'usuario' not in session:
         return redirect('/')
-    return render_template('index.html', usuario=session['usuario'])
+    return render_template("index.html", usuario=session['usuario'])
 
 # -------------------- LOGOUT --------------------
 
@@ -90,21 +86,19 @@ def logout():
     session.clear()
     return redirect('/')
 
-# -------------------- PING --------------------
+# -------------------- PING (WEB) --------------------
 
-@app.route('/ping', methods=['GET', 'POST'])
+@app.route('/ping')
 def ping():
-    resultado = ""
+    try:
+        inicio = time.time()
+        requests.get("https://google.com", timeout=5)
+        fim = time.time()
+        tempo = round((fim - inicio)*1000,2)
 
-    if request.method == 'POST':
-        host = request.form.get('host')
-
-        try:
-            param = "-n" if platform.system().lower() == "windows" else "-c"
-            comando = ["ping", param, "4", host]
-            resultado = subprocess.check_output(comando, universal_newlines=True, timeout=15)
-        except:
-            resultado = "Erro ao executar ping."
+        resultado = f"🟢 Conectado - Tempo: {tempo} ms"
+    except:
+        resultado = "🔴 Sem conexão com a internet"
 
     return render_template("ping.html", resultado=resultado)
 
@@ -115,86 +109,54 @@ def ip():
     try:
         dados = requests.get("https://ipinfo.io/json", timeout=5).json()
     except:
-        dados = {}
+        dados = {"ip":"Erro","city":"","region":"","country":"","org":""}
 
     return render_template("ip.html", dados=dados)
 
 # -------------------- VELOCIDADE --------------------
 
-@app.route('/velocidade', methods=['GET', 'POST'])
+@app.route('/velocidade')
 def velocidade():
-    tempo = None
+    inicio = time.time()
+    try:
+        requests.get("https://google.com", timeout=10)
+    except:
+        pass
+    fim = time.time()
 
-    if request.method == 'POST':
-        inicio = time.time()
-
-        try:
-            param = "-n" if platform.system().lower() == "windows" else "-c"
-            subprocess.call(["ping", param, "1", "google.com"],
-                            stdout=subprocess.DEVNULL,
-                            stderr=subprocess.DEVNULL,
-                            timeout=10)
-        except:
-            pass
-
-        fim = time.time()
-        tempo = round((fim - inicio) * 1000, 2)
+    tempo = round((fim - inicio)*1000,2)
 
     return render_template("velocidade.html", tempo=tempo)
 
-# -------------------- SCANNER --------------------
+# -------------------- SCANNER (DEMO WEB) --------------------
 
-@app.route('/scanner', methods=['GET', 'POST'])
+@app.route('/scanner')
 def scanner():
-    dispositivos = []
-
-    if request.method == 'POST':
-        base = "192.168.0."
-
-        def testar(ip):
-            try:
-                param = "-n" if platform.system().lower() == "windows" else "-c"
-                resposta = subprocess.call(
-                    ["ping", param, "1", ip],
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                    timeout=2
-                )
-                if resposta == 0:
-                    return ip
-            except:
-                pass
-            return None
-
-        ips = [base + str(i) for i in range(1, 50)]
-
-        with concurrent.futures.ThreadPoolExecutor(max_workers=40) as executor:
-            resultados = executor.map(testar, ips)
-
-        for r in resultados:
-            if r:
-                dispositivos.append(r)
+    dispositivos = [
+        "Gateway Principal",
+        "Servidor Cloud",
+        "Firewall Virtual",
+        "Load Balancer",
+        "Servidor DNS"
+    ]
 
     return render_template("scanner.html", dispositivos=dispositivos)
 
-# -------------------- TRACEROUTE --------------------
+# -------------------- TRACEROUTE (WEB SIMULADO) --------------------
 
-@app.route('/traceroute', methods=['GET', 'POST'])
+@app.route('/traceroute')
 def traceroute():
-    resultado = ""
+    rota = [
+        "Servidor Local",
+        "Gateway Cloud",
+        "Firewall Global",
+        "Google Backbone",
+        "Destino Final"
+    ]
 
-    if request.method == 'POST':
-        destino = request.form.get('destino')
-
-        try:
-            comando = ["tracert", destino] if platform.system().lower() == "windows" else ["traceroute", destino]
-            resultado = subprocess.check_output(comando, universal_newlines=True, timeout=30)
-        except:
-            resultado = "Erro ao executar traceroute."
-
-    return render_template("traceroute.html", resultado=resultado)
+    return render_template("traceroute.html", rota=rota)
 
 # -------------------- START --------------------
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
