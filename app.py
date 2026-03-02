@@ -115,32 +115,11 @@ def ip():
 
 # -------------------- VELOCIDADE --------------------
 
-@app.route('/velocidade')
-def velocidade():
-    inicio = time.time()
-    try:
-        requests.get("https://google.com", timeout=10)
-    except:
-        pass
-    fim = time.time()
 
-    tempo = round((fim - inicio)*1000,2)
-
-    return render_template("velocidade.html", tempo=tempo)
 
 # -------------------- SCANNER (DEMO WEB) --------------------
 
-@app.route('/scanner')
-def scanner():
-    dispositivos = [
-        "Gateway Principal",
-        "Servidor Cloud",
-        "Firewall Virtual",
-        "Load Balancer",
-        "Servidor DNS"
-    ]
 
-    return render_template("scanner.html", dispositivos=dispositivos)
 
 # -------------------- TRACEROUTE (WEB SIMULADO) --------------------
 
