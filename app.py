@@ -86,74 +86,92 @@ def logout():
     session.clear()
     return redirect('/')
 
-# -------------------- PING (WEB) --------------------
+# -------------------- PING WEB --------------------
 
-@app.route('/ping')
+@app.route('/ping', methods=['GET','POST'])
 def ping():
-    try:
-        inicio = time.time()
-        requests.get("https://google.com", timeout=5)
-        fim = time.time()
-        tempo = round((fim - inicio)*1000,2)
+    resultado = ""
 
-        resultado = f"🟢 Conectado - Tempo: {tempo} ms"
-    except:
-        resultado = "🔴 Sem conexão com a internet"
+    if request.method == 'POST':
+        host = request.form.get("host", "google.com")
+
+        try:
+            inicio = time.time()
+            requests.get(f"https://{host}", timeout=5)
+            fim = time.time()
+
+            tempo = round((fim - inicio) * 1000, 2)
+            resultado = f"🟢 Host online - Tempo: {tempo} ms"
+
+        except:
+            resultado = "🔴 Host offline ou inacessível"
 
     return render_template("ping.html", resultado=resultado)
 
+# -------------------- IP PÚBLICO --------------------
+
+@app.route('/ip')
+def ip():
+    try:
+        dados = requests.get("https://ipinfo.io/json", timeout=5).json()
+
+        return render_template(
+            "ip.html",
+            ip=dados.get("ip"),
+            cidade=dados.get("city"),
+            regiao=dados.get("region"),
+            pais=dados.get("country"),
+            provedor=dados.get("org")
+        )
+
+    except:
+        return "Erro ao obter IP"
+
 # -------------------- VELOCIDADE --------------------
 
-@app.route('/velocidade', methods=['GET', 'POST'])
+@app.route('/velocidade', methods=['GET','POST'])
 def velocidade():
-    tempo_ms = None
+    tempo = None
 
     if request.method == 'POST':
-        inicio = time.time()
         try:
-            param = "-n" if platform.system().lower() == "windows" else "-c"
-            subprocess.call(["ping", param, "1", "google.com"],
-                            stdout=subprocess.DEVNULL,
-                            stderr=subprocess.DEVNULL)
+            inicio = time.time()
+            requests.get("https://google.com", timeout=5)
+            fim = time.time()
+
+            tempo = round((fim - inicio) * 1000, 2)
         except:
-            pass
+            tempo = "Erro"
 
-        fim = time.time()
-        tempo_ms = round((fim - inicio) * 1000, 2)
+    return render_template("velocidade.html", tempo=tempo)
 
-    return render_template("velocidade.html", tempo=tempo_ms)
+# -------------------- SCANNER SIMULADO --------------------
 
-
-# -------------------- SCANNER --------------------
-
-@app.route('/scanner', methods=['GET', 'POST'])
+@app.route('/scanner', methods=['GET','POST'])
 def scanner():
     resultado = ""
 
     if request.method == 'POST':
-        host = request.form.get('host')
+        host = request.form.get("host")
 
         try:
-            param = "-n" if platform.system().lower() == "windows" else "-c"
-            comando = ["ping", param, "2", host]
-            resultado = subprocess.check_output(comando, universal_newlines=True, timeout=8)
-        except subprocess.TimeoutExpired:
-            resultado = "Tempo limite excedido."
+            requests.get(f"https://{host}", timeout=5)
+            resultado = f"🟢 {host} está ONLINE"
         except:
-            resultado = "Erro ao testar o host."
+            resultado = f"🔴 {host} está OFFLINE"
 
     return render_template("scanner.html", resultado=resultado)
 
-# -------------------- TRACEROUTE (WEB SIMULADO) --------------------
+# -------------------- TRACEROUTE SIMULADO --------------------
 
 @app.route('/traceroute')
 def traceroute():
     rota = [
-        "Servidor Local",
-        "Gateway Cloud",
+        "Dispositivo Local",
+        "Gateway ISP",
+        "Backbone Cloud",
         "Firewall Global",
-        "Google Backbone",
-        "Destino Final"
+        "Servidor Destino"
     ]
 
     return render_template("traceroute.html", rota=rota)

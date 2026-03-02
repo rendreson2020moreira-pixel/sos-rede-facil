@@ -3,24 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Informações de IP</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<header>📡 Informações de IP</header>
+<h2>Informações do IP Público</h2>
 
-<div class="box">
+<p><strong>IP:</strong> {{ ip }}</p>
+<p><strong>Cidade:</strong> {{ cidade }}</p>
+<p><strong>Região:</strong> {{ regiao }}</p>
+<p><strong>País:</strong> {{ pais }}</p>
+<p><strong>Provedor:</strong> {{ provedor }}</p>
 
-    <p>Dados da rede local e internet.</p>
-
-    <div class="ip-box">
-        <p><strong>IP Local:</strong> {{ ip_local }}</p>
-        <p><strong>IP Público:</strong> {{ ip_publico }}</p>
-    </div>
-
-    <a class="voltar" href="/">⬅ Voltar</a>
-
-</div>
+<a href="/painel">Voltar</a>
 
 </body>
 </html>
