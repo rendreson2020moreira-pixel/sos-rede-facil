@@ -3,27 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Scanner de Rede</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<header>🛰 Scanner de Rede</header>
+<h2>Scanner de Host</h2>
 
-<div class="box">
+<form method="POST">
+    <input type="text" name="host" placeholder="Digite IP ou site (ex: google.com)" required>
+    <button type="submit">Testar</button>
+</form>
 
-    <p>Detecta dispositivos conectados na sua rede local.</p>
+{% if resultado %}
+<pre>{{ resultado }}</pre>
+{% endif %}
 
-    <form method="POST">
-        <button type="submit">Iniciar Scanner</button>
-    </form>
-
-    {% if dispositivos %}
-        <pre class="resultado">{{ dispositivos }}</pre>
-    {% endif %}
-
-    <a class="voltar" href="/">⬅ Voltar</a>
-
-</div>
+<a href="/painel">Voltar</a>
 
 </body>
 </html>

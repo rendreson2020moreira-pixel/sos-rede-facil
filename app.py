@@ -128,32 +128,21 @@ def velocidade():
 
 @app.route('/scanner', methods=['GET', 'POST'])
 def scanner():
-    dispositivos = []
+    resultado = ""
 
     if request.method == 'POST':
-        base = "192.168.0."
+        host = request.form.get('host')
 
-        def testar(ip):
-            try:
-                param = "-n" if platform.system().lower() == "windows" else "-c"
-                retorno = subprocess.call(["ping", param, "1", ip],
-                                stdout=subprocess.DEVNULL,
-                                stderr=subprocess.DEVNULL)
-                if retorno == 0:
-                    return ip
-            except:
-                return None
+        try:
+            param = "-n" if platform.system().lower() == "windows" else "-c"
+            comando = ["ping", param, "2", host]
+            resultado = subprocess.check_output(comando, universal_newlines=True, timeout=8)
+        except subprocess.TimeoutExpired:
+            resultado = "Tempo limite excedido."
+        except:
+            resultado = "Erro ao testar o host."
 
-        ips = [base + str(i) for i in range(1, 50)]
-
-        with concurrent.futures.ThreadPoolExecutor(max_workers=30) as executor:
-            resultados = executor.map(testar, ips)
-
-        for r in resultados:
-            if r:
-                dispositivos.append(r)
-
-    return render_template("scanner.html", dispositivos=dispositivos)
+    return render_template("scanner.html", resultado=resultado)
 
 # -------------------- TRACEROUTE (WEB SIMULADO) --------------------
 
