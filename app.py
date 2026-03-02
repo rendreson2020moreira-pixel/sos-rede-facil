@@ -102,24 +102,58 @@ def ping():
 
     return render_template("ping.html", resultado=resultado)
 
-# -------------------- IP PROFISSIONAL --------------------
-
-@app.route('/ip')
-def ip():
-    try:
-        dados = requests.get("https://ipinfo.io/json", timeout=5).json()
-    except:
-        dados = {"ip":"Erro","city":"","region":"","country":"","org":""}
-
-    return render_template("ip.html", dados=dados)
-
 # -------------------- VELOCIDADE --------------------
 
+@app.route('/velocidade', methods=['GET', 'POST'])
+def velocidade():
+    tempo_ms = None
+
+    if request.method == 'POST':
+        inicio = time.time()
+        try:
+            param = "-n" if platform.system().lower() == "windows" else "-c"
+            subprocess.call(["ping", param, "1", "google.com"],
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL)
+        except:
+            pass
+
+        fim = time.time()
+        tempo_ms = round((fim - inicio) * 1000, 2)
+
+    return render_template("velocidade.html", tempo=tempo_ms)
 
 
-# -------------------- SCANNER (DEMO WEB) --------------------
+# -------------------- SCANNER --------------------
 
+@app.route('/scanner', methods=['GET', 'POST'])
+def scanner():
+    dispositivos = []
 
+    if request.method == 'POST':
+        base = "192.168.0."
+
+        def testar(ip):
+            try:
+                param = "-n" if platform.system().lower() == "windows" else "-c"
+                retorno = subprocess.call(["ping", param, "1", ip],
+                                stdout=subprocess.DEVNULL,
+                                stderr=subprocess.DEVNULL)
+                if retorno == 0:
+                    return ip
+            except:
+                return None
+
+        ips = [base + str(i) for i in range(1, 50)]
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=30) as executor:
+            resultados = executor.map(testar, ips)
+
+        for r in resultados:
+            if r:
+                dispositivos.append(r)
+
+    return render_template("scanner.html", dispositivos=dispositivos)
 
 # -------------------- TRACEROUTE (WEB SIMULADO) --------------------
 
