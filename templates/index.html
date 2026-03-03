@@ -2,69 +2,57 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>SOS Rede Fácil</title>
-
-    <!-- CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel — SOS Rede Fácil</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
-    <!-- Ícones -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body>
 
-<header class="topo">
-    <h1>🛜 SOS Rede Fácil</h1>
-    <p>Painel Profissional de Diagnóstico de Redes</p>
-</header>
+<body class="dashboard-body">
 
-<div class="container">
+<div class="dashboard">
 
-    <!-- CARDS PRINCIPAIS -->
-    <div class="cards">
-        <a href="/ip" class="card ip">
-            <i class="fas fa-network-wired"></i>
-            <h3>Meu IP</h3>
-            <p>Ver informações da máquina</p>
-        </a>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2>🚀 SOS Rede</h2>
+        <p class="user">Olá, {{ usuario }}</p>
 
-        <a href="/ping" class="card ping">
-            <i class="fas fa-signal"></i>
-            <h3>Ping</h3>
-            <p>Testar conexão</p>
-        </a>
-    </div>
+        <nav>
+            <a href="/ping">🌐 Ping</a>
+            <a href="/ip">📍 Meu IP</a>
+            <a href="/velocidade">⚡ Velocidade</a>
+            <a href="/scanner">🔎 Scanner</a>
+            <a href="/traceroute">🛰 Traceroute</a>
+            <a href="/logout" class="logout">🚪 Sair</a>
+        </nav>
+    </aside>
 
-    <!-- DIAGNÓSTICO -->
-    <h2 class="secao">🛰 Diagnóstico</h2>
-    <div class="grid">
-        <div class="card">
-            <h3>📡 Scanner de Rede</h3>
-            <p>Detecta dispositivos conectados.</p>
-            <a href="/scanner">Abrir</a>
+    <!-- CONTEÚDO -->
+    <main class="content">
+
+        <h1>📊 Dashboard</h1>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>🌐 Monitoramento</h3>
+                <p>Teste disponibilidade de hosts.</p>
+            </div>
+
+            <div class="card">
+                <h3>⚡ Performance</h3>
+                <p>Verifique velocidade e latência.</p>
+            </div>
+
+            <div class="card">
+                <h3>🔐 Segurança</h3>
+                <p>Escaneie status da rede.</p>
+            </div>
+
         </div>
 
-        <div class="card">
-            <h3>🧭 Traceroute</h3>
-            <p>Exibe a rota dos pacotes.</p>
-            <a href="/traceroute">Abrir</a>
-        </div>
-    </div>
-
-    <!-- PERFORMANCE -->
-    <h2 class="secao">⚡ Performance</h2>
-    <div class="grid">
-        <div class="card">
-            <h3>🚀 Velocidade</h3>
-            <p>Mede download, upload e ping.</p>
-            <a href="/velocidade">Abrir</a>
-        </div>
-    </div>
+    </main>
 
 </div>
-
-<footer>
-    <p>SOS Rede Fácil © 2026 — Sistema Profissional</p>
-</footer>
 
 </body>
 </html>

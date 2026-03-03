@@ -126,4 +126,82 @@ body.login-body {
         opacity: 1;
         transform: translateY(0);
     }
+}/* ===== DASHBOARD ===== */
+
+.dashboard-body {
+    background: #0f172a;
+    color: white;
+}
+
+.dashboard {
+    display: flex;
+    height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 230px;
+    background: #111827;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar h2 {
+    margin-bottom: 10px;
+}
+
+.sidebar .user {
+    font-size: 13px;
+    color: #9ca3af;
+    margin-bottom: 30px;
+}
+
+.sidebar nav a {
+    display: block;
+    color: #e5e7eb;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: 0.3s;
+}
+
+.sidebar nav a:hover {
+    background: #1f2937;
+    transform: translateX(5px);
+}
+
+.logout {
+    margin-top: 20px;
+    color: #f87171 !important;
+}
+
+/* CONTEÚDO */
+.content {
+    flex: 1;
+    padding: 40px;
+}
+
+.content h1 {
+    margin-bottom: 30px;
+}
+
+/* CARDS */
+.cards {
+    display: flex;
+    gap: 20px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 25px;
+    border-radius: 12px;
+    flex: 1;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    background: #334155;
 }
