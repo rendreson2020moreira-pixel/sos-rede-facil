@@ -3,6 +3,7 @@ import sqlite3
 import os
 import requests
 import time
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = 'sosrede'
@@ -39,11 +40,11 @@ def login():
 
         conn = conectar()
         cur = conn.cursor()
-        cur.execute("SELECT * FROM usuarios WHERE email=? AND senha=?", (email,senha))
+        cur.execute("SELECT * FROM usuarios WHERE email=?", (email,))
         user = cur.fetchone()
         conn.close()
 
-        if user:
+        if user and check_password_hash(user[3], senha):
             session['usuario'] = user[1]
             return redirect('/painel')
 
@@ -60,10 +61,12 @@ def cadastro():
         email = request.form['email']
         senha = request.form['senha']
 
+        senha_hash = generate_password_hash(senha)
+
         conn = conectar()
         cur = conn.cursor()
         cur.execute("INSERT INTO usuarios (nome,email,senha) VALUES (?,?,?)",
-                    (nome,email,senha))
+                    (nome,email,senha_hash))
         conn.commit()
         conn.close()
 
@@ -145,7 +148,7 @@ def velocidade():
 
     return render_template("velocidade.html", tempo=tempo)
 
-# -------------------- SCANNER SIMULADO --------------------
+# -------------------- SCANNER --------------------
 
 @app.route('/scanner', methods=['GET','POST'])
 def scanner():
@@ -162,7 +165,7 @@ def scanner():
 
     return render_template("scanner.html", resultado=resultado)
 
-# -------------------- TRACEROUTE SIMULADO --------------------
+# -------------------- TRACEROUTE --------------------
 
 @app.route('/traceroute')
 def traceroute():
