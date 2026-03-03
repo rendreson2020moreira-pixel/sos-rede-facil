@@ -5,26 +5,50 @@
     <title>Cadastro — SOS Rede Fácil</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body class="login-body">
 
 <div class="login-container">
-
     <div class="login-box">
 
         <h2>📝 Criar Conta</h2>
-        <p>SOS Rede Fácil — Painel Profissional</p>
+        <p class="subtitle">Sistema SOS Rede Fácil</p>
+
+        {% if erro %}
+            <div class="erro-msg">
+                {{ erro }}
+            </div>
+        {% endif %}
 
         <form method="POST">
-            <input type="text" name="nome" placeholder="Nome completo" required>
-            <input type="email" name="email" placeholder="E-mail" required>
-            <input type="password" name="senha" placeholder="Senha" required>
-            <button type="submit">Cadastrar</button>
+
+            <div class="input-group">
+                <input type="text" name="nome" placeholder="Nome completo" required>
+            </div>
+
+            <div class="input-group">
+                <input type="email" name="email" placeholder="E-mail" required>
+            </div>
+
+            <div class="input-group">
+                <input type="password" name="senha" placeholder="Senha" required>
+            </div>
+
+            <div class="input-group">
+                <input type="password" name="confirmar_senha" placeholder="Confirmar senha" required>
+            </div>
+
+            <button type="submit" class="btn-login">
+                🚀 Criar Conta
+            </button>
+
         </form>
 
-        <a href="/">⬅ Voltar para o login</a>
+        <div class="extra-links">
+            <a href="/">⬅ Voltar para o login</a>
+        </div>
 
     </div>
-
 </div>
 
 </body>

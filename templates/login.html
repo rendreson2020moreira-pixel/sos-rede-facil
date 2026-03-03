@@ -5,29 +5,42 @@
     <title>Login — SOS Rede Fácil</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body class="login-body">
 
 <div class="login-container">
-
     <div class="login-box">
 
         <h2>🔐 Acesso ao Sistema</h2>
-        <p>SOS Rede Fácil — Painel Profissional</p>
+        <p class="subtitle">SOS Rede Fácil — Painel Profissional</p>
 
         {% if erro %}
-            <div class="erro">{{ erro }}</div>
+            <div class="erro-msg">
+                {{ erro }}
+            </div>
         {% endif %}
 
         <form method="POST">
-            <input type="email" name="email" placeholder="E-mail" required>
-            <input type="password" name="senha" placeholder="Senha" required>
-            <button type="submit">Entrar</button>
+
+            <div class="input-group">
+                <input type="email" name="email" placeholder="E-mail" required>
+            </div>
+
+            <div class="input-group">
+                <input type="password" name="senha" placeholder="Senha" required>
+            </div>
+
+            <button type="submit" class="btn-login">
+                🚀 Entrar
+            </button>
+
         </form>
 
-        <a href="/cadastro">Criar conta</a>
+        <div class="extra-links">
+            <a href="/cadastro">📝 Criar conta</a>
+        </div>
 
     </div>
-
 </div>
 
 </body>

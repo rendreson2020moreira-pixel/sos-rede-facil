@@ -60,6 +60,10 @@ def cadastro():
         nome = request.form['nome']
         email = request.form['email']
         senha = request.form['senha']
+confirmar = request.form['confirmar_senha']
+
+if senha != confirmar:
+    return render_template("cadastro.html", erro="As senhas não coincidem")
 
         senha_hash = generate_password_hash(senha)
 
