@@ -3,6 +3,7 @@ import sqlite3
 import os
 import requests
 import time
+from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -14,19 +15,21 @@ def conectar():
     return sqlite3.connect("usuarios.db")
 
 def criar_banco():
-    if not os.path.exists("usuarios.db"):
-        conn = conectar()
-        cur = conn.cursor()
-        cur.execute("""
-            CREATE TABLE usuarios (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nome TEXT,
-                email TEXT,
-                senha TEXT
-            )
-        """)
-        conn.commit()
-        conn.close()
+    conn = conectar()
+    cur = conn.cursor()
+
+    # Tabela usuários
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT,
+            email TEXT UNIQUE,
+            senha TEXT
+        )
+    """)
+
+    conn.commit()
+    conn.close()
 
 criar_banco()
 
@@ -60,19 +63,24 @@ def cadastro():
         nome = request.form['nome']
         email = request.form['email']
         senha = request.form['senha']
-confirmar = request.form['confirmar_senha']
+        confirmar = request.form['confirmar_senha']
 
-if senha != confirmar:
-    return render_template("cadastro.html", erro="As senhas não coincidem")
+        if senha != confirmar:
+            return render_template("cadastro.html", erro="As senhas não coincidem")
 
         senha_hash = generate_password_hash(senha)
 
-        conn = conectar()
-        cur = conn.cursor()
-        cur.execute("INSERT INTO usuarios (nome,email,senha) VALUES (?,?,?)",
-                    (nome,email,senha_hash))
-        conn.commit()
-        conn.close()
+        try:
+            conn = conectar()
+            cur = conn.cursor()
+            cur.execute(
+                "INSERT INTO usuarios (nome,email,senha) VALUES (?,?,?)",
+                (nome,email,senha_hash)
+            )
+            conn.commit()
+            conn.close()
+        except:
+            return render_template("cadastro.html", erro="E-mail já cadastrado")
 
         return redirect('/')
 
