@@ -205,4 +205,26 @@ body.login-body {
         opacity: 1;
         transform: translateY(0);
     }
+}/* FORMULÁRIO PING */
+.ping-form {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.ping-form input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: #1e293b;
+    color: white;
+}
+
+.resultado-box {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    background: #1e293b;
+    font-weight: 500;
 }
