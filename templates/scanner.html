@@ -2,22 +2,54 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Scanner de Rede</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner — SOS Rede Fácil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
 
-<h2>Scanner de Host</h2>
+<body class="dashboard-body">
 
-<form method="POST">
-    <input type="text" name="host" placeholder="Digite IP ou site (ex: google.com)" required>
-    <button type="submit">Testar</button>
-</form>
+<div class="dashboard">
 
-{% if resultado %}
-<pre>{{ resultado }}</pre>
-{% endif %}
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2>🚀 SOS Rede</h2>
+        <p class="user">Olá, {{ session.usuario }}</p>
 
-<a href="/painel">Voltar</a>
+        <nav>
+            <a href="/painel">📊 Dashboard</a>
+            <a href="/ping">🌐 Ping</a>
+            <a href="/ip">📍 Meu IP</a>
+            <a href="/velocidade">⚡ Velocidade</a>
+            <a href="/scanner">🔎 Scanner</a>
+            <a href="/logout" class="logout">🚪 Sair</a>
+        </nav>
+    </aside>
+
+    <!-- CONTEÚDO -->
+    <main class="content">
+
+        <h1>🔎 Scanner de Host</h1>
+        <p style="color:#9ca3af; margin-bottom:20px;">
+            Verifique se um host está online ou offline.
+        </p>
+
+        <form method="POST" class="ping-form">
+            <input type="text" name="host" placeholder="Digite o site ou IP (ex: google.com)" required>
+            <button type="submit" class="btn-login">
+                🚀 Executar Scanner
+            </button>
+        </form>
+
+        {% if resultado %}
+            <div class="resultado-box">
+                {{ resultado }}
+            </div>
+        {% endif %}
+
+    </main>
+
+</div>
 
 </body>
 </html>
