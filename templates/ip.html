@@ -2,19 +2,70 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Informações de IP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu IP — SOS Rede Fácil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
 
-<h2>Informações do IP Público</h2>
+<body class="dashboard-body">
 
-<p><strong>IP:</strong> {{ ip }}</p>
-<p><strong>Cidade:</strong> {{ cidade }}</p>
-<p><strong>Região:</strong> {{ regiao }}</p>
-<p><strong>País:</strong> {{ pais }}</p>
-<p><strong>Provedor:</strong> {{ provedor }}</p>
+<div class="dashboard">
 
-<a href="/painel">Voltar</a>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2>🚀 SOS Rede</h2>
+        <p class="user">Olá, {{ session.usuario }}</p>
+
+        <nav>
+            <a href="/painel">📊 Dashboard</a>
+            <a href="/ping">🌐 Ping</a>
+            <a href="/ip">📍 Meu IP</a>
+            <a href="/velocidade">⚡ Velocidade</a>
+            <a href="/scanner">🔎 Scanner</a>
+            <a href="/logout" class="logout">🚪 Sair</a>
+        </nav>
+    </aside>
+
+    <!-- CONTEÚDO -->
+    <main class="content">
+
+        <h1>📍 Informações do IP</h1>
+        <p style="color:#9ca3af; margin-bottom:25px;">
+            Dados públicos da sua conexão.
+        </p>
+
+        <div class="ip-grid">
+
+            <div class="ip-card">
+                <h4>🌐 IP</h4>
+                <p>{{ ip }}</p>
+            </div>
+
+            <div class="ip-card">
+                <h4>🏙 Cidade</h4>
+                <p>{{ cidade }}</p>
+            </div>
+
+            <div class="ip-card">
+                <h4>🗺 Região</h4>
+                <p>{{ regiao }}</p>
+            </div>
+
+            <div class="ip-card">
+                <h4>🌎 País</h4>
+                <p>{{ pais }}</p>
+            </div>
+
+            <div class="ip-card">
+                <h4>🏢 Provedor</h4>
+                <p>{{ provedor }}</p>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
 
 </body>
 </html>
