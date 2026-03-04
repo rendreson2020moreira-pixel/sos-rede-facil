@@ -2,26 +2,51 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Teste de Velocidade</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velocidade — SOS Rede Fácil</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
 
-<header>🚀 Teste de Velocidade da Internet</header>
+<body class="dashboard-body">
 
-<div class="box">
+<div class="dashboard">
 
-    <p>Realiza o teste de download, upload e ping da sua conexão.</p>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2>🚀 SOS Rede</h2>
+        <p class="user">Olá, {{ session.usuario }}</p>
 
-    <form method="POST">
-        <button type="submit">Iniciar Teste</button>
-    </form>
+        <nav>
+            <a href="/painel">📊 Dashboard</a>
+            <a href="/ping">🌐 Ping</a>
+            <a href="/ip">📍 Meu IP</a>
+            <a href="/velocidade">⚡ Velocidade</a>
+            <a href="/scanner">🔎 Scanner</a>
+            <a href="/logout" class="logout">🚪 Sair</a>
+        </nav>
+    </aside>
 
-    {% if resultado %}
-        <pre class="resultado">{{ resultado }}</pre>
-    {% endif %}
+    <!-- CONTEÚDO -->
+    <main class="content">
 
-    <a class="voltar" href="/">⬅ Voltar</a>
+        <h1>⚡ Teste de Velocidade</h1>
+        <p style="color:#9ca3af; margin-bottom:20px;">
+            Meça o tempo de resposta da conexão.
+        </p>
+
+        <form method="POST" class="ping-form">
+            <button type="submit" class="btn-login">
+                🚀 Testar Velocidade
+            </button>
+        </form>
+
+        {% if tempo %}
+            <div class="resultado-box">
+                ⏱ Tempo de resposta: <strong>{{ tempo }} ms</strong>
+            </div>
+        {% endif %}
+
+    </main>
 
 </div>
 
