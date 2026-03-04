@@ -256,4 +256,10 @@ body.login-body {
 .ip-card p {
     font-size: 16px;
     font-weight: 600;
+}/* ===== TRACEROUTE RESULTADO ===== */
+
+.resultado-box pre {
+    font-family: monospace;
+    font-size: 13px;
+    color: #cbd5e1;
 }

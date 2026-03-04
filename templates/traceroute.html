@@ -2,27 +2,53 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Traceroute</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traceroute — SOS Rede Fácil</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
 
-<header>🛰 Traceroute — Rota da Conexão</header>
+<body class="dashboard-body">
 
-<div class="box">
+<div class="dashboard">
 
-    <p>Mostra o caminho que os pacotes percorrem até o destino.</p>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2>🚀 SOS Rede</h2>
+        <p class="user">Olá, {{ session.usuario }}</p>
 
-    <form method="POST">
-        <input type="text" name="host" placeholder="Digite o site ou IP (ex: google.com)" required>
-        <button type="submit">Executar Traceroute</button>
-    </form>
+        <nav>
+            <a href="/painel">📊 Dashboard</a>
+            <a href="/ping">🌐 Ping</a>
+            <a href="/ip">📍 Meu IP</a>
+            <a href="/velocidade">⚡ Velocidade</a>
+            <a href="/scanner">🔎 Scanner</a>
+            <a href="/traceroute">🛰 Traceroute</a>
+            <a href="/logout" class="logout">🚪 Sair</a>
+        </nav>
+    </aside>
 
-    {% if resultado %}
-        <pre class="resultado">{{ resultado }}</pre>
-    {% endif %}
+    <!-- CONTEÚDO -->
+    <main class="content">
 
-    <a class="voltar" href="/">⬅ Voltar</a>
+        <h1>🛰 Traceroute — Rota da Conexão</h1>
+        <p style="color:#9ca3af; margin-bottom:20px;">
+            Mostra o caminho que os pacotes percorrem até o destino.
+        </p>
+
+        <form method="POST" class="ping-form">
+            <input type="text" name="host" placeholder="Digite o site ou IP (ex: google.com)" required>
+            <button type="submit" class="btn-login">
+                🚀 Executar Traceroute
+            </button>
+        </form>
+
+        {% if resultado %}
+            <div class="resultado-box">
+                <pre style="white-space: pre-wrap;">{{ resultado }}</pre>
+            </div>
+        {% endif %}
+
+    </main>
 
 </div>
 
