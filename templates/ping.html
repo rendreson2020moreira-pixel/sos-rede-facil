@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -22,6 +23,7 @@
             <a href="/ip">📍 Meu IP</a>
             <a href="/velocidade">⚡ Velocidade</a>
             <a href="/scanner">🔎 Scanner</a>
+            <a href="/traceroute">🛰 Traceroute</a>
             <a href="/logout" class="logout">🚪 Sair</a>
         </nav>
     </aside>
@@ -29,19 +31,23 @@
     <!-- CONTEÚDO -->
     <main class="content">
 
-        <h1>🌐 Teste de Conectividade (Ping)</h1>
+        <h1>🌐 Teste de Conectividade (Ping REAL)</h1>
         <p style="color:#9ca3af; margin-bottom:20px;">
-            Verifique se há comunicação com um site ou IP
+            Executa um ping real (ICMP) como no terminal.
         </p>
 
+        <!-- FORM -->
         <form method="POST" class="ping-form">
             <input type="text" name="host" placeholder="Digite o site ou IP (ex: google.com)" required>
-            <button type="submit" class="btn-login">Executar Ping</button>
+            <button type="submit" class="btn-login">
+                🚀 Executar Ping
+            </button>
         </form>
 
+        <!-- RESULTADO -->
         {% if resultado %}
             <div class="resultado-box">
-                {{ resultado }}
+                <pre style="white-space: pre-wrap;">{{ resultado }}</pre>
             </div>
         {% endif %}
 
@@ -51,3 +57,4 @@
 
 </body>
 </html>
+```
