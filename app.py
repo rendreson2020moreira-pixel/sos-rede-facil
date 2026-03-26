@@ -8,6 +8,7 @@ import re
 import subprocess
 import platform
 import socket
+import threading
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -27,12 +28,23 @@ def criar_banco():
     conn = conectar()
     cur = conn.cursor()
 
+    # usuários
     cur.execute("""
         CREATE TABLE IF NOT EXISTS usuarios (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nome TEXT,
             email TEXT UNIQUE,
             senha TEXT
+        )
+    """)
+
+    # monitoramento
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS monitoramento (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            host TEXT,
+            status TEXT,
+            ultimo_check TEXT
         )
     """)
 
@@ -124,6 +136,46 @@ def scan_portas(host, portas):
     return abertas
 
 
+# -------------------- MONITORAMENTO AUTOMÁTICO --------------------
+
+def verificar_host(host):
+    try:
+        requests.get(f"https://{host}", timeout=5)
+        return "ONLINE"
+    except:
+        return "OFFLINE"
+
+
+def monitoramento_loop():
+    while True:
+        conn = conectar()
+        cur = conn.cursor()
+
+        cur.execute("SELECT id, host FROM monitoramento")
+        dados = cur.fetchall()
+
+        for item in dados:
+            id_host = item[0]
+            host = item[1]
+
+            status = verificar_host(host)
+
+            cur.execute("""
+                UPDATE monitoramento
+                SET status=?, ultimo_check=?
+                WHERE id=?
+            """, (status, time.strftime("%Y-%m-%d %H:%M:%S"), id_host))
+
+            conn.commit()
+
+        conn.close()
+        time.sleep(30)
+
+
+# inicia thread automática
+threading.Thread(target=monitoramento_loop, daemon=True).start()
+
+
 # -------------------- LOGIN --------------------
 
 @app.route('/', methods=['GET', 'POST'])
@@ -188,12 +240,29 @@ def painel():
     return render_template("index.html", usuario=session['usuario'])
 
 
-# -------------------- LOGOUT --------------------
+# -------------------- MONITORAMENTO --------------------
 
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect('/')
+@app.route('/monitoramento', methods=['GET', 'POST'])
+@login_obrigatorio
+def monitoramento():
+    conn = conectar()
+    cur = conn.cursor()
+
+    if request.method == 'POST':
+        host = request.form.get("host")
+
+        if host_valido(host):
+            cur.execute(
+                "INSERT INTO monitoramento (host, status, ultimo_check) VALUES (?, ?, ?)",
+                (host, "PENDENTE", "")
+            )
+            conn.commit()
+
+    cur.execute("SELECT * FROM monitoramento")
+    dados = cur.fetchall()
+    conn.close()
+
+    return render_template("monitoramento.html", dados=dados)
 
 
 # -------------------- PING REAL --------------------
